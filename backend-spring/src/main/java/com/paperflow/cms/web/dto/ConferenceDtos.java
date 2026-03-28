@@ -23,11 +23,11 @@ public class ConferenceDtos {
         String bannerUrl
     ) {}
 
+    public record Meta(long total) {}
+    
     public record ListConferencesResponse(
         List<ConferenceSummary> data,
         Meta meta
-    ) {
-        public record Meta(long total) {}
-    }
+    ) {}
 }
 

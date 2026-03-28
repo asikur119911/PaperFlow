@@ -46,8 +46,8 @@ public class ReviewController {
         @RequestParam("reviewerId") String reviewerId
     ) {
         List<Assignment> assignments = assignmentService.pendingAssignmentsForReviewer(reviewerId);
-        List<ReviewDtos.PendingReviewsResponse.AssignmentInfo> items = assignments.stream()
-            .map(a -> new ReviewDtos.PendingReviewsResponse.AssignmentInfo(
+        List<ReviewDtos.AssignmentInfo> items = assignments.stream()
+            .map(a -> new ReviewDtos.AssignmentInfo(
                 a.getPaper().getTitle(),
                 Instant.now().toString(),
                 a.getStatus().name(),

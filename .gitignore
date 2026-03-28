@@ -1,0 +1,10 @@
+
+
+node modules/ 
+.github/ 
+.vscode 
+.venv/ 
+__pycache__/
+classes/
+generated-sources/
+package-lock.json

@@ -5,7 +5,7 @@ public class PaperDtos {
     public record SubmitPaperRequest(
         String conferenceId,
         String title,
-        String abstract,
+        String paper_abstract,
         java.util.List<String> authors,
         String track
     ) {}

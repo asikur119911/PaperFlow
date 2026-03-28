@@ -27,15 +27,15 @@ public class ReviewDtos {
         String status
     ) {}
 
-    public record PendingReviewsResponse(
-        List<AssignmentInfo> assignments
-    ) {
-        public record AssignmentInfo(
+    public record AssignmentInfo(
             String paperTitle,
             String deadline,
             String status,
             String assignmentId
         ) {}
-    }
+        
+    public record PendingReviewsResponse(
+        List<AssignmentInfo> assignments
+    ) {}
 }
 
