@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:paperflow;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8080
+
+paperflow:
+  fastapi-base-url: ${FASTAPI_BASE_URL:http://localhost:8001}
+
