@@ -8,12 +8,15 @@ import { useEffect, useState } from "react";
 import { getPendingReviews, type PendingReviewsResponse } from "@/lib/api";
 
 export default function ReviewerDashboardPage() {
-  const reviewerId = "mock-reviewer-id";
   const [data, setData] = useState<PendingReviewsResponse | null>(null);
 
   useEffect(() => {
+    const reviewerId = typeof window !== "undefined"
+      ? localStorage.getItem("userId") ?? ""
+      : "";
+    if (!reviewerId) return;
     getPendingReviews(reviewerId).then(setData).catch(console.error);
-  }, [reviewerId]);
+  }, []);
 
   return (
     <AppShell>

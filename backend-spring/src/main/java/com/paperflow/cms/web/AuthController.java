@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Set;
+
 @RestController
 @RequestMapping("/paperflow/v1")
 public class AuthController {
@@ -46,11 +48,17 @@ public class AuthController {
         User user = authService.login(request.email(), request.password());
         String access = authService.generateAccessToken(user);
         String refresh = authService.generateRefreshToken(user);
+        Set<String> roleNames = user.getRoles().stream()
+            .map(Enum::name)
+            .collect(java.util.stream.Collectors.toSet());
         return ResponseEntity.ok(
             new AuthDtos.LoginResponse(
                 access,
                 refresh,
-                3600
+                3600,
+                user.getId(),
+                user.getEmail(),
+                roleNames
             )
         );
     }

@@ -1,0 +1,4 @@
+requirements 
+1. while writing the password there should be option if the user wants to see the password , if yes , the password will be shown , else it will be shown in the standarad way as dots 
+2.in the login windown , while the card for login/ sign in is there , there should be no log out option at the corner of the page 
+3.a new user cannot sign in bruh , it just shows a error on the screen of the user 

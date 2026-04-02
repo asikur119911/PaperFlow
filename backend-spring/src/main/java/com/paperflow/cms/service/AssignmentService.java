@@ -72,6 +72,8 @@ public class AssignmentService {
         review.setComments(comments);
         if ("ACCEPT".equalsIgnoreCase(recommendation)) {
             review.setRecommendation(com.paperflow.cms.domain.DecisionRecommendation.ACCEPT);
+        } else if ("REVISE".equalsIgnoreCase(recommendation)) {
+            review.setRecommendation(com.paperflow.cms.domain.DecisionRecommendation.REVISE);
         } else {
             review.setRecommendation(com.paperflow.cms.domain.DecisionRecommendation.REJECT);
         }
@@ -93,6 +95,8 @@ public class AssignmentService {
             paperService.updateStatus(assignment.getPaper().getId(), PaperStatus.ACCEPTED);
         } else if ("REJECTED".equalsIgnoreCase(suggestedStatus)) {
             paperService.updateStatus(assignment.getPaper().getId(), PaperStatus.REJECTED);
+        } else if ("REVISION_REQUIRED".equalsIgnoreCase(suggestedStatus)) {
+            paperService.updateStatus(assignment.getPaper().getId(), PaperStatus.REVISION_REQUIRED);
         } else {
             paperService.updateStatus(assignment.getPaper().getId(), PaperStatus.UNDER_REVIEW);
         }

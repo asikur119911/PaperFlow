@@ -6,8 +6,10 @@ import Button from "@/components/ui/Button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { listConferences, type ConferenceSummary } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 export default function ConferencesPage() {
+  const router = useRouter();
   const [confs, setConfs] = useState<ConferenceSummary[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -38,7 +40,12 @@ export default function ConferencesPage() {
               </div>
               <div className="mt-1 text-lg font-semibold">{conf.title}</div>
               <div className="mt-4 flex justify-end">
-                <Button variant="secondary">View</Button>
+                <Button
+                  variant="secondary"
+                  onClick={() => router.push(`/conferences/${conf.id}/submit`)}
+                >
+                  Submit Paper
+                </Button>
               </div>
             </Card>
           ))}

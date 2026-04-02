@@ -6,8 +6,10 @@ import Input from "@/components/ui/Input";
 import Card from "@/components/ui/Card";
 import { useState } from "react";
 import { loginUser } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,7 +21,11 @@ export default function LoginPage() {
     setError(null);
     try {
       const res = await loginUser({ email, password });
-      console.log("Logged in:", res);
+      localStorage.setItem("accessToken", res.accessToken);
+      localStorage.setItem("userId", res.userId);
+      localStorage.setItem("email", res.email);
+      localStorage.setItem("roles", JSON.stringify(res.roles));
+      router.push("/");
     } catch (err: any) {
       setError(err.message ?? "Login failed");
     } finally {
@@ -52,10 +58,10 @@ export default function LoginPage() {
             />
             {error && (
               <p className="text-xs text-red-600">
-                {error}
+                {"Sorry , an error occured . Please try with correct credentials"}
               </p>
             )}
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full" disabled={loading} >
               {loading ? "Signing in..." : "Sign in"}
             </Button>
           </form>

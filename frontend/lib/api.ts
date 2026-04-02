@@ -55,6 +55,9 @@ export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   expiresIn: number;
+  userId: string;
+  email: string;
+  roles: string[];
 }
 
 export function loginUser(body: LoginRequest) {
@@ -131,6 +134,23 @@ export interface SubmitPaperResponse {
   status: string;
 }
 
+export interface PaperSummary {
+  id: string;
+  title: string;
+  status: string;
+  conferenceId: string;
+}
+
+export interface ListPapersResponse {
+  data: PaperSummary[];
+  total: number;
+}
+
+export function listPapers(conferenceId?: string) {
+  const qs = conferenceId ? `?conferenceId=${encodeURIComponent(conferenceId)}` : "";
+  return request<ListPapersResponse>(`/paperflow/v1/papers${qs}`);
+}
+
 export function submitPaper(body: SubmitPaperRequest) {
   return request<SubmitPaperResponse>("/paperflow/v1/papers", {
     method: "POST",
@@ -160,7 +180,7 @@ export interface SubmitReviewRequest {
   assignmentId: string;
   score: number;
   confidence: string;
-  recommendation: "ACCEPT" | "REJECT";
+  recommendation: "ACCEPT" | "REJECT" | "REVISE";
   comments?: string;
 }
 

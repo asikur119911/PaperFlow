@@ -15,7 +15,7 @@ export default function ReviewSubmissionPage() {
   const [form, setForm] = useState({
     score: 8,
     confidence: "HIGH",
-    recommendation: "ACCEPT" as "ACCEPT" | "REJECT",
+    recommendation: "ACCEPT" as "ACCEPT" | "REJECT" | "REVISE",
     comments: ""
   });
   const [message, setMessage] = useState<string | null>(null);
@@ -60,16 +60,23 @@ export default function ReviewSubmissionPage() {
               setForm({ ...form, confidence: e.target.value })
             }
           />
-          <Input
-            label="Recommendation"
-            value={form.recommendation}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                recommendation: e.target.value === "REJECT" ? "REJECT" : "ACCEPT"
-              })
-            }
-          />
+          <label className="flex flex-col gap-1 text-sm">
+            <span className="font-medium text-slate-700">Recommendation</span>
+            <select
+              className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-400"
+              value={form.recommendation}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  recommendation: e.target.value as "ACCEPT" | "REJECT" | "REVISE"
+                })
+              }
+            >
+              <option value="ACCEPT">Accept</option>
+              <option value="REJECT">Reject</option>
+              <option value="REVISE">Revise</option>
+            </select>
+          </label>
           <label className="flex flex-col gap-1 text-sm">
             <span className="font-medium text-slate-700">Comments</span>
             <textarea

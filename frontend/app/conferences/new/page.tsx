@@ -6,8 +6,10 @@ import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { useState } from "react";
 import { createConference } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 export default function NewConferencePage() {
+  const router = useRouter();
   const [form, setForm] = useState({
     title: "",
     acronym: "",
@@ -31,6 +33,7 @@ export default function NewConferencePage() {
         venue: form.venue
       });
       setMessage(`Created conference ${res.conferenceId}`);
+      setTimeout(() => router.push("/conferences"), 1200);
     } catch (err: any) {
       setMessage(err.message ?? "Failed to create conference");
     } finally {

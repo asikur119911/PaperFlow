@@ -24,7 +24,10 @@ public class AuthDtos {
     public record LoginResponse(
         String accessToken,
         String refreshToken,
-        long expiresIn
+        long expiresIn,
+        String userId,
+        String email,
+        java.util.Set<String> roles
     ) {}
 }
 

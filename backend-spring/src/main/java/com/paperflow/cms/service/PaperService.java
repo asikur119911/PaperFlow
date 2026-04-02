@@ -35,6 +35,13 @@ public class PaperService {
         return paperRepository.save(paper);
     }
 
+    public java.util.List<Paper> listPapers(String conferenceId) {
+        if (conferenceId != null && !conferenceId.isBlank()) {
+            return paperRepository.findByConference_Id(conferenceId);
+        }
+        return paperRepository.findAll();
+    }
+
     public Paper updateStatus(String paperId, PaperStatus status) {
         Paper paper = paperRepository.findById(paperId)
             .orElseThrow(() -> new IllegalArgumentException("Paper not found"));

@@ -6,8 +6,10 @@ import Input from "@/components/ui/Input";
 import Card from "@/components/ui/Card";
 import { useState } from "react";
 import { registerUser } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
+  const router = useRouter();
   const [form, setForm] = useState({
     fullName: "",
     email: "",
@@ -30,7 +32,8 @@ export default function SignupPage() {
         affiliation: form.affiliation,
         country: form.country
       });
-      setMessage(`${res.message} (userId: ${res.userId})`);
+      setMessage(`${res.message} Redirecting to login...`);
+      setTimeout(() => router.push("/auth/login"), 1500);
     } catch (err: any) {
       setMessage(err.message ?? "Signup failed");
     } finally {
