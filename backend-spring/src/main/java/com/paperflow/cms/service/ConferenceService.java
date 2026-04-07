@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
+
 @Service
 public class ConferenceService {
 
@@ -15,18 +17,23 @@ public class ConferenceService {
         this.conferenceRepository = conferenceRepository;
     }
 
-    public Conference createConference(String title,
-                                       String acronym,
-                                       String researchArea,
-                                       String startDate,
-                                       String venue) {
+    public Conference createConference(
+            String title,
+            String acronym,
+            String researchArea,
+            OffsetDateTime startDate,
+            OffsetDateTime endDate,
+            OffsetDateTime submissionDeadline,
+            String venue) {
         Conference c = new Conference();
         c.setTitle(title);
         c.setAcronym(acronym);
         c.setResearchArea(researchArea);
+        c.setStartDate(startDate);
+        c.setEndDate(endDate);
+        c.setSubmissionDeadline(submissionDeadline);
         c.setVenue(venue);
         c.setStatus("DRAFT");
-        // startDate can be parsed when needed; for hello-world we store title/venue/status
         return conferenceRepository.save(c);
     }
 
@@ -34,4 +41,3 @@ public class ConferenceService {
         return conferenceRepository.findAll(PageRequest.of(page - 1, limit));
     }
 }
-

@@ -1,5 +1,6 @@
 package com.paperflow.cms.web.dto;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public class ConferenceDtos {
@@ -8,7 +9,9 @@ public class ConferenceDtos {
         String title,
         String acronym,
         String researchArea,
-        String startDate,
+        OffsetDateTime startDate,
+        OffsetDateTime endDate,
+        OffsetDateTime submissionDeadline,
         String venue
     ) {}
 
@@ -30,4 +33,3 @@ public class ConferenceDtos {
         Meta meta
     ) {}
 }
-

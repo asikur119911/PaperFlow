@@ -1,4 +1,4 @@
-// File: /mnt/746497C864978C0C/course_material_of_3_2/cse_450/paperflow/frontend/app/page.tsx
+// File: /run/media/shadmanabid/746497C864978C0C/course_material_of_3_2/cse_450/paperflow/frontend/app/page.tsx
 import * as entry from '../../../app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

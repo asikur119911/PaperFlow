@@ -33,6 +33,8 @@ public class ConferenceController {
             request.acronym(),
             request.researchArea(),
             request.startDate(),
+            request.endDate(),
+            request.submissionDeadline(),
             request.venue()
         );
         return ResponseEntity.ok(
@@ -63,4 +65,3 @@ public class ConferenceController {
         return ResponseEntity.ok(new ConferenceDtos.ListConferencesResponse(data, meta));
     }
 }
-

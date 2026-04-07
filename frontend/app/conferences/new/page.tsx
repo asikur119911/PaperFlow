@@ -15,6 +15,8 @@ export default function NewConferencePage() {
     acronym: "",
     researchArea: "",
     startDate: "",
+    endDate: "",
+    submissionDeadline: "",
     venue: ""
   });
   const [loading, setLoading] = useState(false);
@@ -29,7 +31,9 @@ export default function NewConferencePage() {
         title: form.title,
         acronym: form.acronym,
         researchArea: form.researchArea,
-        startDate: form.startDate,
+        startDate: new Date(form.startDate).toISOString(),
+        endDate: new Date(form.endDate).toISOString(),
+        submissionDeadline: new Date(form.submissionDeadline).toISOString(),
         venue: form.venue
       });
       setMessage(`Created conference ${res.conferenceId}`);
@@ -67,12 +71,27 @@ export default function NewConferencePage() {
             }
           />
           <Input
-            label="Start date"
-            type="date"
+            label="Start date & time"
+            type="datetime-local"
             value={form.startDate}
+            onChange={(e) => setForm({ ...form, startDate: e.target.value })}
+            onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+          />
+          <Input
+            label="End date & time"
+            type="datetime-local"
+            value={form.endDate}
+            onChange={(e) => setForm({ ...form, endDate: e.target.value })}
+            onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+          />
+          <Input
+            label="Paper submission deadline"
+            type="datetime-local"
+            value={form.submissionDeadline}
             onChange={(e) =>
-              setForm({ ...form, startDate: e.target.value })
+              setForm({ ...form, submissionDeadline: e.target.value })
             }
+            onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
           />
           <Input
             label="Venue"
@@ -90,4 +109,3 @@ export default function NewConferencePage() {
     </AppShell>
   );
 }
-

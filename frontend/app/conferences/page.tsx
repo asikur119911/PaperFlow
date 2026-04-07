@@ -25,19 +25,21 @@ export default function ConferencesPage() {
         <h1 className="text-2xl font-semibold tracking-tight">
           Conferences
         </h1>
-        <Link href="/conferences/new">
+        {/* <Link href="/conferences/new">
           <Button>New conference</Button>
-        </Link>
+        </Link> */}
       </div>
       {loading ? (
         <p className="mt-4 text-sm text-slate-500">Loading...</p>
+      ) : confs.length === 0 ? (
+        <p className="mt-4 text-sm text-slate-500">Sorry, no new conference at this moment.</p>
       ) : (
         <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {confs.map((conf) => (
             <Card key={conf.id}>
-              <div className="text-xs uppercase tracking-wide text-slate-500">
+              {/* <div className="text-xs uppercase tracking-wide text-slate-500">
                 {conf.id}
-              </div>
+              </div> */}
               <div className="mt-1 text-lg font-semibold">{conf.title}</div>
               <div className="mt-4 flex justify-end">
                 <Button

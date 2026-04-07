@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
@@ -24,11 +24,14 @@ public class Conference {
     @Column(name = "acronym", length = 64)
     private String acronym;
 
-    @Column(name = "research_area", length = 255)
+    @Column(name = "research_area", nullable = false, length = 255)
     private String researchArea;
 
-    @Column(name = "start_date")
-    private LocalDate startDate;
+    @Column(name = "start_date", nullable = false, columnDefinition = "TIMESTAMPTZ")
+    private OffsetDateTime startDate;
+
+    @Column(name = "end_date", columnDefinition = "TIMESTAMPTZ")
+    private OffsetDateTime endDate;
 
     @Column(name = "venue", length = 255)
     private String venue;
@@ -36,8 +39,8 @@ public class Conference {
     @Column(name = "status", length = 64)
     private String status;
 
-    @Column(name = "submission_deadline")
-    private LocalDate submissionDeadline;
+    @Column(name = "submission_deadline", columnDefinition = "TIMESTAMPTZ")
+    private OffsetDateTime submissionDeadline;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chair_id")
@@ -74,12 +77,20 @@ public class Conference {
         this.researchArea = researchArea;
     }
 
-    public LocalDate getStartDate() {
+    public OffsetDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(OffsetDateTime startDate) {
         this.startDate = startDate;
+    }
+
+    public OffsetDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(OffsetDateTime endDate) {
+        this.endDate = endDate;
     }
 
     public String getVenue() {
@@ -98,11 +109,11 @@ public class Conference {
         this.status = status;
     }
 
-    public LocalDate getSubmissionDeadline() {
+    public OffsetDateTime getSubmissionDeadline() {
         return submissionDeadline;
     }
 
-    public void setSubmissionDeadline(LocalDate submissionDeadline) {
+    public void setSubmissionDeadline(OffsetDateTime submissionDeadline) {
         this.submissionDeadline = submissionDeadline;
     }
 
@@ -114,4 +125,3 @@ public class Conference {
         this.chair = chair;
     }
 }
-

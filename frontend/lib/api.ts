@@ -104,6 +104,8 @@ export interface CreateConferenceRequest {
   acronym: string;
   researchArea: string;
   startDate: string;
+  endDate: string;
+  submissionDeadline: string;
   venue: string;
 }
 

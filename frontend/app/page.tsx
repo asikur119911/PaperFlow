@@ -74,13 +74,11 @@ function PublicLanding() {
   );
 }
 
-function ProfileDashboard({
-  email,
-  roles,
-}: {
-  email: string;
-  roles: string[];
-}) {
+function ProfileDashboard({email,roles}: {email: string;roles: string[];}) {  // parameters wont come 
+  /*
+  and why that is ? some one can both be an admin of a conference and author in another conference 
+  we will show two divs , one where his created conferences will be shown(the lower div) , the upper div will show his participated conferences 
+  */
   const router = useRouter();
   const [confs, setConfs] = useState<ConferenceSummary[]>([]);
   const [papers, setPapers] = useState<PaperSummary[]>([]);
@@ -96,7 +94,7 @@ function ProfileDashboard({
 
   const isChair = roles.includes("CHAIR");
   const isReviewer = roles.includes("REVIEWER");
-
+  const username:string = email.split("@")[0];
   useEffect(() => {
     const userId = localStorage.getItem("userId") ?? "";
     const promises: Promise<void>[] = [];
@@ -131,14 +129,14 @@ function ProfileDashboard({
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
             Welcome back,{" "}
-            <span className="text-slate-600">{email || "User"}</span>
+            <span className="text-slate-600">{username || "User"}</span>
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          {/* <p className="mt-1 text-sm text-slate-500">
             Role:{" "}
             <span className="font-medium text-slate-700">
               {roles.join(", ") || "AUTHOR"}
             </span>
-          </p>
+          </p> */}
         </div>
 
         {/* Conferences as Admin – CHAIR only */}
@@ -251,7 +249,7 @@ function ProfileDashboard({
               {papers.map((p) => (
                 <Card key={p.id}>
                   <div className="text-xs uppercase tracking-wide text-slate-400">
-                    Conference: {p.conferenceId}
+                    Conference: {p.title}
                   </div>
                   <div className="mt-1 font-semibold">{p.title}</div>
                   <div className="mt-1 text-xs text-slate-500">
