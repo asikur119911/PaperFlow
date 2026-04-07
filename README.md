@@ -323,3 +323,49 @@ The important part of this hello-world is that:
 
 You now have a fully runnable, locally testable CMS prototype with all major modules interconnected.
 
+## 5. Database(PostgreSQL) Access
+⚠️ Note: This project does not use seed.sql or data.sql.
+Data is persisted automatically using Spring Boot + JPA (Hibernate).
+
+## Spring Boot Configuration
+
+`spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/paperflow
+    username: paperflow_user
+    password: paperflow123
+
+`
+
+## Connect to Database
+
+```
+psql -h localhost -U paperflow_user -d paperflow
+```
+## Enter Password
+
+```paperflow123```
+
+## List Tables
+
+```
+\dt
+```
+
+## View Data
+
+```SELECT * FROM users;
+SELECT * FROM conferences;
+SELECT * FROM papers;
+SELECT * FROM assignments;
+SELECT * FROM reviews;
+```
+
+## Inspect Table Structure
+
+```\d users
+\d conferences
+\d papers
+\d assignments
+\d reviews  
+```
