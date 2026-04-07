@@ -3,17 +3,16 @@
 import AppShell from "@/components/layout/AppShell";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import AdminConferencesSection from "@/components/dashboard/AdminConferencesSection";
+import ReviewerDashboard from "@/components/dashboard/ReviewerDashboard";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   listConferences,
-  listConferenceAllPapers,
   listIndividualPapers,
-  getPendingReviews,
   type ConferenceSummary,
   type PaperSummary,
 } from "@/lib/api";
-import { useRouter } from "next/navigation";
 
 function PublicLanding() {
   const [confs, setConfs] = useState<ConferenceSummary[]>([]);
@@ -75,30 +74,22 @@ function PublicLanding() {
   );
 }
 
-function ProfileDashboard({email,roles}: {email: string;roles: string[];}) {  // parameters wont come 
+function ProfileDashboard({email}: {email: string;roles: string[];}) {  // parameters wont come 
   /*
   and why that is ? some one can both be an admin of a conference and author in another conference 
   we will show two divs , one where his created conferences will be shown(the lower div) , the upper div will show his participated conferences 
   */
-  const router = useRouter();
   const [confs, setConfs] = useState<ConferenceSummary[]>([]);
-  const [conferenceAllPapers, setConferenceAllPapers] = useState<PaperSummary[]>([]);
   const [individualPaper,setIndividualPaper]=useState<PaperSummary[]>([]);
-  const [assignments, setAssignments] = useState<
-    {
-      paperTitle: string;
-      deadline: string;
-      status: string;
-      assignmentId: string;
-    }[]
-  >([]);
+  const [userId, setUserId] = useState("");
   const [loading, setLoading] = useState(true);
 
   // const isChair = roles.includes("CHAIR");
   // const isReviewer = roles.includes("REVIEWER");
   const username:string = email.split("@")[0];
   useEffect(() => {
-    const userId = localStorage.getItem("userId") ?? "";
+    const currentUserId = localStorage.getItem("userId") ?? "";
+    setUserId(currentUserId);
     const promises: Promise<void>[] = [];
 
     promises.push(
@@ -114,17 +105,9 @@ function ProfileDashboard({email,roles}: {email: string;roles: string[];}) {  //
     // );
 
     promises.push(
-      listIndividualPapers(userId).then((res)=> setIndividualPaper(res.data))//user id goes here 
+      listIndividualPapers(currentUserId).then((res)=> setIndividualPaper(res.data))//user id goes here 
       .catch(()=> setIndividualPaper([]))
     );
-
-    if (userId) {
-      promises.push(
-        getPendingReviews(userId)
-          .then((res) => setAssignments(res.assignments))
-          .catch(() => setAssignments([]))
-      );
-    }
 
     Promise.all(promises).finally(() => setLoading(false));
   }, []);
@@ -151,88 +134,12 @@ function ProfileDashboard({email,roles}: {email: string;roles: string[];}) {  //
 {/*=================================================================================================================================*/}
  {/*===================== Conferences as Admin – Admin only ==================================================================*/}
  {/*=================================================================================================================================*/}       
-          <section>
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">
-                Conferences You Administer
-              </h2>
-              <Link href="/conferences/new">
-                <Button>New Conference</Button>
-              </Link>
-            </div>
-            {loading ? (
-              <p className="mt-3 text-sm text-slate-500">Loading…</p>
-            ) : confs.length === 0 ? (
-              <p className="mt-3 text-sm text-slate-500">
-                No conferences yet.
-              </p>
-            ) : (
-              <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                {confs.map((conf) => (
-                  <Card key={conf.id}>
-                    
-                    <div className="mt-1 font-semibold">{conf.title}</div>
-                    <div className="text-xs uppercase tracking-wide text-slate-400">
-                      {conf.researchArea }
-                    </div>
-                    <div className="mt-4 flex justify-end">
-                      <Button
-                        variant="secondary"
-                        // onClick={() =>
-                        //   router.push(`/conferences/${conf.id}/submit`) //what kinda joke was it ? ?? view submissions taking me to submit papers 
-                        // }
-                        onClick={()=>{
-                          //call listConferenceAllPapers as list or something
-                        }}
-                      >
-                        View Submissions
-                      </Button>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </section>
+          <AdminConferencesSection confs={confs} loading={loading} />
       
 {/*=================================================================================================================================*/}
  {/*===================== Conferences as Reviewer – REVIEWER only ==================================================================*/}
  {/*=================================================================================================================================*/}       
-          <section>
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">
-                Conferences You Review
-              </h2>
-              <Link href="/reviewer">
-                <Button variant="secondary">All Assignments</Button>
-              </Link>
-            </div>
-            {loading ? (
-              <p className="mt-3 text-sm text-slate-500">Loading…</p>
-            ) : assignments.length === 0 ? (
-              <p className="mt-3 text-sm text-slate-500">
-                No review assignments yet.
-              </p>
-            ) : (
-              <div className="mt-3 space-y-3">
-                {assignments.map((a) => (
-                  <Card
-                    key={a.assignmentId}
-                    className="flex items-center justify-between"
-                  >
-                    <div>
-                      <div className="text-sm font-medium">{a.paperTitle}</div>
-                      <div className="text-xs text-slate-500">
-                        Deadline: {a.deadline} · Status: {a.status}
-                      </div>
-                    </div>
-                    <Link href={`/reviewer/assignments/${a.assignmentId}`}>
-                      <Button variant="secondary">Review</Button>
-                    </Link>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </section>
+          <ReviewerDashboard userId={userId} />
         
 
 {/*=================================================================================================================================*/}

@@ -1,8 +1,9 @@
 {
   "/page": "app/page.js",
+  "/auth/login/page": "app/auth/login/page.js",
   "/auth/signup/page": "app/auth/signup/page.js",
-  "/conferences/new/page": "app/conferences/new/page.js",
   "/conferences/page": "app/conferences/page.js",
   "/conferences/[id]/submit/page": "app/conferences/[id]/submit/page.js",
-  "/reviewer/page": "app/reviewer/page.js"
+  "/reviewer/page": "app/reviewer/page.js",
+  "/conferences/new/page": "app/conferences/new/page.js"
 }

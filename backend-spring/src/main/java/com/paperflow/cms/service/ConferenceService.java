@@ -31,6 +31,8 @@ public class ConferenceService {
             OffsetDateTime endDate,
             OffsetDateTime submissionDeadline,
             String venue) {
+
+        System.out.println("create conference working");
         User chair = userRepository.findById(chairId)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Conference c = new Conference();

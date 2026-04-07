@@ -39,6 +39,7 @@ public class ConferenceController {
             request.submissionDeadline(),
             request.venue()
         );
+        System.out.println("working fine bruh ");
         return ResponseEntity.ok(
             new ConferenceDtos.CreateConferenceResponse(
                 c.getId(),

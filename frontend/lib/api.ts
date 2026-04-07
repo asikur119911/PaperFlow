@@ -1,8 +1,10 @@
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
 
-async function request<T>( path: string,options: RequestInit = {}): Promise<T> {
-  const res = await fetch(`${API_BASE_URL}${path}`, {
+async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const url = `${API_BASE_URL}${path}`;
+  console.debug(`[api] ${options.method ?? "GET"} ${url}`);
+  const res = await fetch(url, {
     headers: {
       "Content-Type": "application/json",
       ...(options.headers || {})
@@ -12,8 +14,38 @@ async function request<T>( path: string,options: RequestInit = {}): Promise<T> {
   });
 
   if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || res.statusText);
+    let message = "Request failed. Please try again.";
+    try {
+      const raw = await res.text();
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw) as {
+            message?: string;
+            error?: string;
+            details?: string;
+          };
+          message =
+            parsed.message ||
+            parsed.error ||
+            parsed.details ||
+            message;
+        } catch {
+          if (!raw.trim().startsWith("<")) {
+            message = raw.trim();
+          }
+        }
+      }
+    } catch {
+      message = "Unable to reach server. Please try again.";
+    }
+
+    if (res.status >= 500) {
+      throw new Error("Server error. Please try again later.");
+    }
+    if (res.status === 404) {
+      throw new Error("Requested resource was not found.");
+    }
+    throw new Error(message);
   }
 
   if (res.status === 204) return undefined as T;
@@ -207,5 +239,84 @@ export function submitReview(body: SubmitReviewRequest) {
     method: "POST",
     body: JSON.stringify(body)
   });
+}
+
+export interface InviteReviewersRequest {
+  emails: string[];
+}
+
+export interface InviteReviewersResponse {
+  conferenceId: string;
+  invitedCount: number;
+  invitedReviewerIds: string[];
+  message: string;
+}
+
+export function inviteReviewers(conferenceId: string, body: InviteReviewersRequest) {
+  return request<InviteReviewersResponse>(
+    `/paperflow/v1/conferences/${encodeURIComponent(conferenceId)}/invite`,
+    {
+      method: "POST",
+      body: JSON.stringify(body)
+    }
+  );
+}
+
+export interface AssignReviewersResponse {
+  conferenceId: string;
+  totalPapers: number;
+  totalAssignmentsCreated: number;
+  message: string;
+}
+
+export function assignReviewers(conferenceId: string) {
+  return request<AssignReviewersResponse>(
+    `/paperflow/v1/conferences/${encodeURIComponent(conferenceId)}/assign`,
+    {
+      method: "POST"
+    }
+  );
+}
+
+export interface AssignmentReviewerSummary {
+  reviewerId: string;
+  reviewerEmail: string;
+  reviewerName: string;
+}
+
+export interface PaperAssignmentSummary {
+  paperId: string;
+  paperTitle: string;
+  reviewers: AssignmentReviewerSummary[];
+}
+
+export interface ConferenceAssignmentsResponse {
+  conferenceId: string;
+  totalPapers: number;
+  assignments: PaperAssignmentSummary[];
+}
+
+export function getAssignments(conferenceId: string) {
+  return request<ConferenceAssignmentsResponse>(
+    `/paperflow/v1/conferences/${encodeURIComponent(conferenceId)}/assignments`
+  );
+}
+
+export interface ReviewerDashboardPaper {
+  conferenceId: string;
+  conferenceTitle: string;
+  paperId: string;
+  paperTitle: string;
+}
+
+export interface ReviewerDashboardResponse {
+  reviewerId: string;
+  papers: ReviewerDashboardPaper[];
+}
+
+export function getReviewerDashboard(userId: string) {
+  return request<ReviewerDashboardResponse>(
+    `/paperflow/v1/users/${encodeURIComponent(userId)}/reviewer-dashboard`
+  );
 }
 

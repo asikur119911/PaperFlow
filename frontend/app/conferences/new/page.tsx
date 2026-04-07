@@ -28,6 +28,7 @@ export default function NewConferencePage() {
     setMessage(null);
     try {
       const chairId = localStorage.getItem("userId") ?? "";
+      // console.log("here goes the chair id "+id)
       const res = await createConference({
         chairId,
         title: form.title,
