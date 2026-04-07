@@ -6,10 +6,11 @@ public class PaperDtos {
 
     public record SubmitPaperRequest(
         String conferenceId,
+        String userId,
         String title,
         @JsonProperty("abstract") String paperAbstract,
         java.util.List<String> authors,
-        String track
+        String researchArea
     ) {}
 
     public record SubmitPaperResponse(
@@ -21,7 +22,7 @@ public class PaperDtos {
         String id,
         String title,
         String status,
-        String conferenceId
+        String conference_name
     ) {}
 
     public record ListPapersResponse(

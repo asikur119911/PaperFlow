@@ -1,7 +1,9 @@
 package com.paperflow.cms.service;
 
 import com.paperflow.cms.domain.Conference;
+import com.paperflow.cms.domain.User;
 import com.paperflow.cms.repository.ConferenceRepository;
+import com.paperflow.cms.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -12,12 +14,16 @@ import java.time.OffsetDateTime;
 public class ConferenceService {
 
     private final ConferenceRepository conferenceRepository;
+    private final UserRepository userRepository;
 
-    public ConferenceService(ConferenceRepository conferenceRepository) {
+    public ConferenceService(ConferenceRepository conferenceRepository,
+                             UserRepository userRepository) {
         this.conferenceRepository = conferenceRepository;
+        this.userRepository = userRepository;
     }
 
     public Conference createConference(
+            String chairId,
             String title,
             String acronym,
             String researchArea,
@@ -25,7 +31,10 @@ public class ConferenceService {
             OffsetDateTime endDate,
             OffsetDateTime submissionDeadline,
             String venue) {
+        User chair = userRepository.findById(chairId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Conference c = new Conference();
+        c.setChair(chair);
         c.setTitle(title);
         c.setAcronym(acronym);
         c.setResearchArea(researchArea);

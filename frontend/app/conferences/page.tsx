@@ -41,6 +41,9 @@ export default function ConferencesPage() {
                 {conf.id}
               </div> */}
               <div className="mt-1 text-lg font-semibold">{conf.title}</div>
+               <div className="text-xs uppercase tracking-wide text-slate-500">
+                {conf.researchArea}
+              </div> 
               <div className="mt-4 flex justify-end">
                 <Button
                   variant="secondary"

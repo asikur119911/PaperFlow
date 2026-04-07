@@ -7,7 +7,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   listConferences,
-  listPapers,
+  listConferenceAllPapers,
+  listIndividualPapers,
   getPendingReviews,
   type ConferenceSummary,
   type PaperSummary,
@@ -81,7 +82,8 @@ function ProfileDashboard({email,roles}: {email: string;roles: string[];}) {  //
   */
   const router = useRouter();
   const [confs, setConfs] = useState<ConferenceSummary[]>([]);
-  const [papers, setPapers] = useState<PaperSummary[]>([]);
+  const [conferenceAllPapers, setConferenceAllPapers] = useState<PaperSummary[]>([]);
+  const [individualPaper,setIndividualPaper]=useState<PaperSummary[]>([]);
   const [assignments, setAssignments] = useState<
     {
       paperTitle: string;
@@ -92,8 +94,8 @@ function ProfileDashboard({email,roles}: {email: string;roles: string[];}) {  //
   >([]);
   const [loading, setLoading] = useState(true);
 
-  const isChair = roles.includes("CHAIR");
-  const isReviewer = roles.includes("REVIEWER");
+  // const isChair = roles.includes("CHAIR");
+  // const isReviewer = roles.includes("REVIEWER");
   const username:string = email.split("@")[0];
   useEffect(() => {
     const userId = localStorage.getItem("userId") ?? "";
@@ -105,10 +107,15 @@ function ProfileDashboard({email,roles}: {email: string;roles: string[];}) {  //
         .catch(() => setConfs([]))
     );
 
+    // promises.push(
+    //   listConferenceAllPapers() //where do i get the conference id ? 
+    //     .then((res) => setConferenceAllPapers(res.data))
+    //     .catch(() => setConferenceAllPapers([]))
+    // );
+
     promises.push(
-      listPapers()
-        .then((res) => setPapers(res.data))
-        .catch(() => setPapers([]))
+      listIndividualPapers(userId).then((res)=> setIndividualPaper(res.data))//user id goes here 
+      .catch(()=> setIndividualPaper([]))
     );
 
     if (userId) {
@@ -139,8 +146,11 @@ function ProfileDashboard({email,roles}: {email: string;roles: string[];}) {  //
           </p> */}
         </div>
 
-        {/* Conferences as Admin – CHAIR only */}
-        {isChair && (
+
+        
+{/*=================================================================================================================================*/}
+ {/*===================== Conferences as Admin – Admin only ==================================================================*/}
+ {/*=================================================================================================================================*/}       
           <section>
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">
@@ -160,16 +170,20 @@ function ProfileDashboard({email,roles}: {email: string;roles: string[];}) {  //
               <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {confs.map((conf) => (
                   <Card key={conf.id}>
-                    <div className="text-xs uppercase tracking-wide text-slate-400">
-                      {conf.id}
-                    </div>
+                    
                     <div className="mt-1 font-semibold">{conf.title}</div>
+                    <div className="text-xs uppercase tracking-wide text-slate-400">
+                      {conf.researchArea }
+                    </div>
                     <div className="mt-4 flex justify-end">
                       <Button
                         variant="secondary"
-                        onClick={() =>
-                          router.push(`/conferences/${conf.id}/submit`)
-                        }
+                        // onClick={() =>
+                        //   router.push(`/conferences/${conf.id}/submit`) //what kinda joke was it ? ?? view submissions taking me to submit papers 
+                        // }
+                        onClick={()=>{
+                          //call listConferenceAllPapers as list or something
+                        }}
                       >
                         View Submissions
                       </Button>
@@ -179,10 +193,10 @@ function ProfileDashboard({email,roles}: {email: string;roles: string[];}) {  //
               </div>
             )}
           </section>
-        )}
-
-        {/* Conferences as Reviewer – REVIEWER only */}
-        {isReviewer && (
+      
+{/*=================================================================================================================================*/}
+ {/*===================== Conferences as Reviewer – REVIEWER only ==================================================================*/}
+ {/*=================================================================================================================================*/}       
           <section>
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">
@@ -219,9 +233,12 @@ function ProfileDashboard({email,roles}: {email: string;roles: string[];}) {  //
               </div>
             )}
           </section>
-        )}
+        
 
-        {/* Conferences as Author / Publisher – always shown */}
+{/*=================================================================================================================================*/}
+ {/*===================== Conferences as Author  ==================================================================*/}
+ {/*=================================================================================================================================*/}       
+
         <section>
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold">
@@ -233,7 +250,7 @@ function ProfileDashboard({email,roles}: {email: string;roles: string[];}) {  //
           </div>
           {loading ? (
             <p className="mt-3 text-sm text-slate-500">Loading…</p>
-          ) : papers.length === 0 ? (
+          ) : individualPaper.length === 0 ? (
             <p className="mt-3 text-sm text-slate-500">
               No submissions yet.{" "}
               <Link
@@ -246,10 +263,10 @@ function ProfileDashboard({email,roles}: {email: string;roles: string[];}) {  //
             </p>
           ) : (
             <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-              {papers.map((p) => (
+              {individualPaper.map((p) => (
                 <Card key={p.id}>
                   <div className="text-xs uppercase tracking-wide text-slate-400">
-                    Conference: {p.title}
+                    Conference: {p.conference_name}
                   </div>
                   <div className="mt-1 font-semibold">{p.title}</div>
                   <div className="mt-1 text-xs text-slate-500">

@@ -20,9 +20,13 @@ public class Paper {
     @Column(name = "id", nullable = false, updatable = false, length = 36)
     private String id = UUID.randomUUID().toString();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "conference_id", nullable = false)
     private Conference conference;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
 
     @Column(name = "title", nullable = false, length = 512)
     private String title;
@@ -30,8 +34,8 @@ public class Paper {
     @Column(name = "abstract", length = 4000)
     private String abstractText;
 
-    @Column(name = "track", length = 255)
-    private String track;
+    @Column(name = "researchArea", length = 255)
+    private String researchArea;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 32)
@@ -58,6 +62,14 @@ public class Paper {
         this.conference = conference;
     }
 
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -74,12 +86,12 @@ public class Paper {
         this.abstractText = abstractText;
     }
 
-    public String getTrack() {
-        return track;
+    public String getResearchArea() {
+        return researchArea;
     }
 
-    public void setTrack(String track) {
-        this.track = track;
+    public void setResearchArea(String researchArea) {
+        this.researchArea = researchArea;
     }
 
     public PaperStatus getStatus() {

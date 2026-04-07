@@ -1,10 +1,7 @@
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
 
-async function request<T>(
-  path: string,
-  options: RequestInit = {}
-): Promise<T> {
+async function request<T>( path: string,options: RequestInit = {}): Promise<T> {
   const res = await fetch(`${API_BASE_URL}${path}`, {
     headers: {
       "Content-Type": "application/json",
@@ -72,6 +69,7 @@ export function loginUser(body: LoginRequest) {
 export interface ConferenceSummary {
   id: string;
   title: string;
+  researchArea: string;
   bannerUrl?: string;
 }
 
@@ -100,6 +98,7 @@ export function listConferences(params?: {
 }
 
 export interface CreateConferenceRequest {
+  chairId: string;
   title: string;
   acronym: string;
   researchArea: string;
@@ -125,10 +124,11 @@ export function createConference(body: CreateConferenceRequest) {
 
 export interface SubmitPaperRequest {
   conferenceId: string;
+  userId: string;
   title: string;
   abstract: string;
   authors: string[];
-  track: string;
+  researchArea: string;
 }
 
 export interface SubmitPaperResponse {
@@ -140,17 +140,28 @@ export interface PaperSummary {
   id: string;
   title: string;
   status: string;
-  conferenceId: string;
+  conference_name: string;
 }
 
-export interface ListPapersResponse {
+// get request
+export interface ListIndividualPapersResponse {
   data: PaperSummary[];
   total: number;
 }
 
-export function listPapers(conferenceId?: string) {
-  const qs = conferenceId ? `?conferenceId=${encodeURIComponent(conferenceId)}` : "";
-  return request<ListPapersResponse>(`/paperflow/v1/papers${qs}`);
+export function listIndividualPapers(user_id :string){
+  const userId=encodeURIComponent(user_id);
+  return request<ListIndividualPapersResponse>(`/paperflow/v1/papers?userId=${userId}`);
+}
+
+//get request 
+export interface ListConferencePapersResponse {
+  data: PaperSummary[];
+  total: number;
+}
+export function listConferenceAllPapers(conferenceId: string) {
+  const qs = encodeURIComponent(conferenceId);
+  return request<ListConferencePapersResponse>(`/paperflow/v1/papers?conferenceId=${qs}`);
 }
 
 export function submitPaper(body: SubmitPaperRequest) {

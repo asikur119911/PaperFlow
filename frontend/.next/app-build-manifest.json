@@ -11,6 +11,11 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
+    "/conferences/new/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/conferences/new/page.js"
+    ],
     "/auth/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -26,20 +31,15 @@
       "static/chunks/main-app.js",
       "static/chunks/app/conferences/page.js"
     ],
-    "/conferences/new/page": [
+    "/conferences/[id]/submit/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/conferences/new/page.js"
+      "static/chunks/app/conferences/[id]/submit/page.js"
     ],
     "/reviewer/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/reviewer/page.js"
-    ],
-    "/conferences/[id]/submit/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/conferences/[id]/submit/page.js"
     ]
   }
 }

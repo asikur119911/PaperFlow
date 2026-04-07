@@ -27,10 +27,10 @@ public class Conference {
     @Column(name = "research_area", nullable = false, length = 255)
     private String researchArea;
 
-    @Column(name = "start_date", nullable = false, columnDefinition = "TIMESTAMPTZ")
+    @Column(name = "start_date", nullable = false)
     private OffsetDateTime startDate;
 
-    @Column(name = "end_date", columnDefinition = "TIMESTAMPTZ")
+    @Column(name = "end_date")
     private OffsetDateTime endDate;
 
     @Column(name = "venue", length = 255)
@@ -39,11 +39,11 @@ public class Conference {
     @Column(name = "status", length = 64)
     private String status;
 
-    @Column(name = "submission_deadline", columnDefinition = "TIMESTAMPTZ")
+    @Column(name = "submission_deadline")
     private OffsetDateTime submissionDeadline;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chair_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "chair_id", nullable = false)
     private User chair;
 
     public Conference() {

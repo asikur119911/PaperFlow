@@ -28,7 +28,9 @@ public class ConferenceController {
     public ResponseEntity<ConferenceDtos.CreateConferenceResponse> create(
         @RequestBody ConferenceDtos.CreateConferenceRequest request
     ) {
+        System.out.println("within confrence controller");
         Conference c = conferenceService.createConference(
+            request.chairId(),
             request.title(),
             request.acronym(),
             request.researchArea(),
@@ -57,6 +59,7 @@ public class ConferenceController {
             .map(c -> new ConferenceDtos.ConferenceSummary(
                 c.getId(),
                 c.getTitle(),
+                c.getResearchArea(),
                 null
             ))
             .toList();

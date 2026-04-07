@@ -13,7 +13,7 @@ export default function SubmitPaperPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
 
-  const [form, setForm] = useState({ title: "", abstract: "", track: "" });
+  const [form, setForm] = useState({ title: "", abstract: "", researchArea: "" });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -23,12 +23,15 @@ export default function SubmitPaperPage() {
     setLoading(true);
     setError(null);
     try {
+      const userId = localStorage.getItem("userId") ?? "";
+      console.log("got the user id "+ userId );
       await submitPaper({
         conferenceId: params.id,
+        userId,
         title: form.title,
         abstract: form.abstract,
         authors: [],
-        track: form.track
+        researchArea: form.researchArea
       });
       setSubmitted(true);
     } catch (err: any) {
@@ -83,9 +86,9 @@ export default function SubmitPaperPage() {
               />
             </label>
             <Input
-              label="Track"
-              value={form.track}
-              onChange={(e) => setForm({ ...form, track: e.target.value })}
+              label="Research Area"
+              value={form.researchArea}
+              onChange={(e) => setForm({ ...form, researchArea: e.target.value })}
             />
             <Button type="submit" disabled={loading}>
               {loading ? "Submitting…" : "Submit"}

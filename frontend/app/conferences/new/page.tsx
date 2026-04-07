@@ -27,7 +27,9 @@ export default function NewConferencePage() {
     setLoading(true);
     setMessage(null);
     try {
+      const chairId = localStorage.getItem("userId") ?? "";
       const res = await createConference({
+        chairId,
         title: form.title,
         acronym: form.acronym,
         researchArea: form.researchArea,
@@ -36,10 +38,10 @@ export default function NewConferencePage() {
         submissionDeadline: new Date(form.submissionDeadline).toISOString(),
         venue: form.venue
       });
-      setMessage(`Created conference ${res.conferenceId}`);
+      setMessage(`Created conference `);
       setTimeout(() => router.push("/conferences"), 1200);
     } catch (err: any) {
-      setMessage(err.message ?? "Failed to create conference");
+      setMessage("Failed to create conference");
     } finally {
       setLoading(false);
     }

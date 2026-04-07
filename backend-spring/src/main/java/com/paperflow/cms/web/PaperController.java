@@ -23,31 +23,48 @@ public class PaperController {
         this.paperService = paperService;
     }
 
-    @GetMapping("/papers")
-    public ResponseEntity<PaperDtos.ListPapersResponse> list(
-        @RequestParam(name = "conferenceId", required = false) String conferenceId
+    @GetMapping(value="/papers",params="conferenceId")
+    public ResponseEntity<PaperDtos.ListPapersResponse> listConferencePapers (
+        @RequestParam(name = "conferenceId") String conferenceId
     ) {
-        List<Paper> papers = paperService.listPapers(conferenceId);
+        List<Paper> papers = paperService.listConferencePapers(conferenceId);
         List<PaperDtos.PaperSummary> data = papers.stream()
             .map(p -> new PaperDtos.PaperSummary(
                 p.getId(),
                 p.getTitle(),
                 p.getStatus().name(),
-                p.getConference().getId()
+                p.getConference().getTitle()
             ))
             .toList();
         return ResponseEntity.ok(new PaperDtos.ListPapersResponse(data, data.size()));
     }
+    @GetMapping(value="/papers",params="userId")
+    public ResponseEntity<PaperDtos.ListPapersResponse> listIndividualPapers (
+        @RequestParam(name = "userId") String userId
+    ) {
+        List<Paper> papers = paperService.listIndividualPapers(userId);
+        List<PaperDtos.PaperSummary> data = papers.stream()
+            .map(p -> new PaperDtos.PaperSummary(
+                p.getId(),
+                p.getTitle(),
+                p.getStatus().name(),
+                p.getConference().getTitle()
+            ))
+            .toList();
 
+            System.out.println(data.size());
+        return ResponseEntity.ok(new PaperDtos.ListPapersResponse(data, data.size()));
+    }
     @PostMapping("/papers")
-    public ResponseEntity<PaperDtos.SubmitPaperResponse> submit(
+    public ResponseEntity<PaperDtos.SubmitPaperResponse> submit(  
         @RequestBody PaperDtos.SubmitPaperRequest request
     ) {
         Paper paper = paperService.submitPaper(
             request.conferenceId(),
+            request.userId(),
             request.title(),
             request.paperAbstract(),
-            request.track()
+            request.researchArea()
         );
         return ResponseEntity.ok(
             new PaperDtos.SubmitPaperResponse(

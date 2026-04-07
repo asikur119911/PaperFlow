@@ -6,6 +6,7 @@ import java.util.List;
 public class ConferenceDtos {
 
     public record CreateConferenceRequest(
+        String chairId,
         String title,
         String acronym,
         String researchArea,
@@ -23,7 +24,9 @@ public class ConferenceDtos {
     public record ConferenceSummary(
         String id,
         String title,
+        String researchArea,
         String bannerUrl
+
     ) {}
 
     public record Meta(long total) {}
