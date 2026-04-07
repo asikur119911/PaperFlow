@@ -223,3 +223,25 @@ export function submitReview(body: SubmitReviewRequest) {
   });
 }
 
+
+export interface UpdateProfileRequest {
+  fullName: string;
+  affiliation?: string;
+  country?: string;
+}
+
+export interface UpdateProfileResponse {
+  userId: string;
+  status: string;
+  message: string;
+}
+
+export function updateProfile(userId: string, body: UpdateProfileRequest) {
+  return request<UpdateProfileResponse>(
+    `/paperflow/v1/auth/profile?userId=${encodeURIComponent(userId)}`,
+    {
+      method: "PUT",
+      body: JSON.stringify(body),
+    }
+  );
+}

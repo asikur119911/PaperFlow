@@ -11,15 +11,15 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/conferences/page": [
+    "/profile/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/conferences/page.js"
+      "static/chunks/app/profile/page.js"
     ],
-    "/conferences/new/page": [
+    "/auth/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/conferences/new/page.js"
+      "static/chunks/app/auth/login/page.js"
     ]
   }
 }

@@ -8,7 +8,9 @@ const links = [
   { href: "/", label: "Dashboard" },
   { href: "/conferences", label: "Conferences" },
   { href: "/conferences/new", label: "Create Conference" },
-  { href: "/reviewer", label: "Reviewer Dashboard" }
+  { href: "/reviewer", label: "Reviewer Dashboard" },
+  { href: "/profile", label: "My Profile" }
+
 ];
 
 export default function Sidebar() {

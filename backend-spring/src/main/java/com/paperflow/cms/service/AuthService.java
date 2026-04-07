@@ -52,6 +52,9 @@ public class AuthService {
 
     }
 
+    //
+
+
     public String generateAccessToken(User user) {
         // Mock token for prototype
         return "mock-jwt-" + user.getId() + "-" + UUID.randomUUID();
@@ -60,5 +63,17 @@ public class AuthService {
     public String generateRefreshToken(User user) {
         return "mock-rt-" + user.getId() + "-" + UUID.randomUUID();
     }
+
+        public User updateProfile(String userId, String fullName, String affiliation, String country) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (fullName != null) user.setFullName(fullName);
+        if (affiliation != null) user.setAffiliation(affiliation);
+        if (country != null) user.setCountry(country);
+
+        return userRepository.save(user);
+    }
+
 }
 
