@@ -329,13 +329,14 @@ Data is persisted automatically using Spring Boot + JPA (Hibernate).
 
 ## Spring Boot Configuration
 
-`spring:
+```
+spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/paperflow
     username: paperflow_user
     password: paperflow123
 
-`
+```
 
 ## Connect to Database
 
