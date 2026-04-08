@@ -6,7 +6,7 @@ public class ReviewDtos {
 
     public record ManualAssignmentRequest(
         String paperId,
-        String reviewerId
+        String reviewerEmail
     ) {}
 
     public record ManualAssignmentResponse(

@@ -24,21 +24,25 @@ export default function ReviewerDashboardPage() {
         Reviewer dashboard
       </h1>
       <div className="mt-4 space-y-3">
-        {data?.assignments.map((a) => (
-          <Card key={a.assignmentId} className="flex items-center justify-between">
-            <div>
-              <div className="text-sm font-medium">{a.paperTitle}</div>
-              <div className="text-xs text-slate-500">
-                Deadline: {a.deadline} · Status: {a.status}
+        {!data || data.assignments.length === 0 ? (
+          <p className="text-sm text-slate-500">No assignments.</p>
+        ) : (
+          data.assignments.map((a) => (
+            <Card key={a.assignmentId} className="flex items-center justify-between">
+              <div>
+                <div className="text-sm font-medium">{a.paperTitle}</div>
+                <div className="text-xs text-slate-500">
+                  Deadline: {a.deadline} · Status: {a.status}
+                </div>
               </div>
-            </div>
-            <Link href={`/reviewer/assignments/${a.assignmentId}`}>
-              <Button variant="secondary">
-                Review
-              </Button>
-            </Link>
-          </Card>
-        )) || <p className="text-sm text-slate-500">No assignments.</p>}
+              <Link href={`/reviewer/assignments/${a.assignmentId}`}>
+                <Button variant="secondary">
+                  Review
+                </Button>
+              </Link>
+            </Card>
+          ))
+        )}
       </div>
     </AppShell>
   );

@@ -5,6 +5,7 @@ import Button from "@/components/ui/Button";
 import {
   assignReviewers,
   getAssignments,
+  manualAssignReviewer,
   type ConferenceAssignmentsResponse,
   type PaperAssignmentSummary,
 } from "@/lib/api";
@@ -60,14 +61,19 @@ export default function AssignReviewersModal({ conferenceId, onClose }: Props) {
     [papers.length]
   );
 
-  const handleAssignManually = (paperId: string) => {
-    if (!(paperEmails[paperId] ?? "").trim()) return;
-    setPaperEmails((prev) => ({ ...prev, [paperId]: "" }));
-    setRowSuccess((prev) => ({ ...prev, [paperId]: true }));
-
-    setTimeout(() => {
-      setRowSuccess((prev) => ({ ...prev, [paperId]: false }));
-    }, 2000);
+  const handleAssignManually = async (paperId: string) => {
+    const email = (paperEmails[paperId] ?? "").trim();
+    if (!email) return;
+    setError("");
+    try {
+      await manualAssignReviewer(paperId, email);
+      setPaperEmails((prev) => ({ ...prev, [paperId]: "" }));
+      setRowSuccess((prev) => ({ ...prev, [paperId]: true }));
+      setTimeout(() => setRowSuccess((prev) => ({ ...prev, [paperId]: false })), 2000);
+      await refreshAssignments();
+    } catch {
+      setError("Unable to assign reviewer.");
+    }
   };
 
   const handleAutoAssign = async () => {

@@ -1,6 +1,20 @@
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
 
+/** Shared prefix for Spring Boot handlers under `@RequestMapping("/paperflow/v1")` */
+const PAPERFLOW_V1 = "/paperflow/v1";
+
+/**
+ * Conference reviewer flows (invite / bulk assign / list assignments) are mapped on
+ * `ReviewController` as `/paperflow/v1/conferences/{id}/…` — not on `ConferenceController`.
+ */
+function reviewControllerConferencePath(
+  conferenceId: string,
+  segment: "invite" | "assign" | "assignments"
+): string {
+  return `${PAPERFLOW_V1}/conferences/${encodeURIComponent(conferenceId)}/${segment}`;
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const url = `${API_BASE_URL}${path}`;
   console.debug(`[api] ${options.method ?? "GET"} ${url}`);
@@ -69,7 +83,7 @@ export interface RegisterResponse {
 }
 
 export function registerUser(body: RegisterRequest) {
-  return request<RegisterResponse>("/paperflow/v1/auth/register", {
+  return request<RegisterResponse>(`${PAPERFLOW_V1}/auth/register`, {
     method: "POST",
     body: JSON.stringify(body)
   });
@@ -90,7 +104,7 @@ export interface LoginResponse {
 }
 
 export function loginUser(body: LoginRequest) {
-  return request<LoginResponse>("/paperflow/v1/auth/login", {
+  return request<LoginResponse>(`${PAPERFLOW_V1}/auth/login`, {
     method: "POST",
     body: JSON.stringify(body)
   });
@@ -123,8 +137,7 @@ export function listConferences(params?: {
   if (params?.limit) search.set("limit", String(params.limit));
 
   const qs = search.toString();
-  const path =
-    "/paperflow/v1/conferences" + (qs ? `?${qs}` : "");
+  const path = `${PAPERFLOW_V1}/conferences` + (qs ? `?${qs}` : "");
 
   return request<ListConferencesResponse>(path);
 }
@@ -146,7 +159,7 @@ export interface CreateConferenceResponse {
 }
 
 export function createConference(body: CreateConferenceRequest) {
-  return request<CreateConferenceResponse>("/paperflow/v1/conferences", {
+  return request<CreateConferenceResponse>(`${PAPERFLOW_V1}/conferences`, {
     method: "POST",
     body: JSON.stringify(body)
   });
@@ -183,7 +196,7 @@ export interface ListIndividualPapersResponse {
 
 export function listIndividualPapers(user_id :string){
   const userId=encodeURIComponent(user_id);
-  return request<ListIndividualPapersResponse>(`/paperflow/v1/papers?userId=${userId}`);
+  return request<ListIndividualPapersResponse>(`${PAPERFLOW_V1}/papers?userId=${userId}`);
 }
 
 //get request 
@@ -193,11 +206,11 @@ export interface ListConferencePapersResponse {
 }
 export function listConferenceAllPapers(conferenceId: string) {
   const qs = encodeURIComponent(conferenceId);
-  return request<ListConferencePapersResponse>(`/paperflow/v1/papers?conferenceId=${qs}`);
+  return request<ListConferencePapersResponse>(`${PAPERFLOW_V1}/papers?conferenceId=${qs}`);
 }
 
 export function submitPaper(body: SubmitPaperRequest) {
-  return request<SubmitPaperResponse>("/paperflow/v1/papers", {
+  return request<SubmitPaperResponse>(`${PAPERFLOW_V1}/papers`, {
     method: "POST",
     body: JSON.stringify(body)
   });
@@ -215,7 +228,7 @@ export interface PendingReviewsResponse {
 }
 
 export function getPendingReviews(reviewerId: string) {
-  const path = `/paperflow/v1/reviews/pending?reviewerId=${encodeURIComponent(
+  const path = `${PAPERFLOW_V1}/reviews/pending?reviewerId=${encodeURIComponent(
     reviewerId
   )}`;
   return request<PendingReviewsResponse>(path);
@@ -235,7 +248,7 @@ export interface SubmitReviewResponse {
 }
 
 export function submitReview(body: SubmitReviewRequest) {
-  return request<SubmitReviewResponse>("/paperflow/v1/reviews", {
+  return request<SubmitReviewResponse>(`${PAPERFLOW_V1}/reviews`, {
     method: "POST",
     body: JSON.stringify(body)
   });
@@ -253,12 +266,16 @@ export interface InviteReviewersResponse {
 }
 
 export function inviteReviewers(conferenceId: string, body: InviteReviewersRequest) {
-  return request<InviteReviewersResponse>(
-    `/paperflow/v1/conferences/${encodeURIComponent(conferenceId)}/invite`,
-    {
-      method: "POST",
-      body: JSON.stringify(body)
-    }
+  return request<InviteReviewersResponse>(reviewControllerConferencePath(conferenceId, "invite"), {
+    method: "POST",
+    body: JSON.stringify(body)
+  });
+}
+
+export function manualAssignReviewer(paperId: string, reviewerEmail: string) {
+  return request<{ assignmentId: string; status: string }>(
+    `${PAPERFLOW_V1}/assignments`,
+    { method: "POST", body: JSON.stringify({ paperId, reviewerEmail }) }
   );
 }
 
@@ -270,12 +287,9 @@ export interface AssignReviewersResponse {
 }
 
 export function assignReviewers(conferenceId: string) {
-  return request<AssignReviewersResponse>(
-    `/paperflow/v1/conferences/${encodeURIComponent(conferenceId)}/assign`,
-    {
-      method: "POST"
-    }
-  );
+  return request<AssignReviewersResponse>(reviewControllerConferencePath(conferenceId, "assign"), {
+    method: "POST"
+  });
 }
 
 export interface AssignmentReviewerSummary {
@@ -298,7 +312,7 @@ export interface ConferenceAssignmentsResponse {
 
 export function getAssignments(conferenceId: string) {
   return request<ConferenceAssignmentsResponse>(
-    `/paperflow/v1/conferences/${encodeURIComponent(conferenceId)}/assignments`
+    reviewControllerConferencePath(conferenceId, "assignments")
   );
 }
 
@@ -315,8 +329,9 @@ export interface ReviewerDashboardResponse {
 }
 
 export function getReviewerDashboard(userId: string) {
-  return request<ReviewerDashboardResponse>(
-    `/paperflow/v1/users/${encodeURIComponent(userId)}/reviewer-dashboard`
-  );
+  const path = `${PAPERFLOW_V1}/reviews/reviewer-dashboard?reviewerId=${encodeURIComponent(
+    userId
+  )}`;
+  return request<ReviewerDashboardResponse>(path);
 }
 
